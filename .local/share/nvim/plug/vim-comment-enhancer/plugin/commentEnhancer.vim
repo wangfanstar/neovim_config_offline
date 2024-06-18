@@ -56,7 +56,10 @@ function! ProcessComment(action)
   endif
   
   " Select the modified lines in visual mode and then format include comment"
-  execute "normal! V" . l:start_line . "G="
+  let l:current_indent = indent(line('.') - 1 ) "get previous line indent
+  if l:current_indent > 0
+	execute "normal! V" . l:start_line . "G="
+  endif
 endfunction
 
 function! AddComment()
