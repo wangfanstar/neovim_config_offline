@@ -54,6 +54,9 @@ function! ProcessComment(action)
     execute "normal! \<Esc>o\<C-u>\<Esc>"
     execute "normal! a" . l:suffix
   endif
+  
+  " Select the modified lines in visual mode and then format include comment"
+  execute "normal! V" . l:start_line . "G="
 endfunction
 
 function! AddComment()
