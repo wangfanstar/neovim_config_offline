@@ -29,6 +29,7 @@ Plug '~/.local/share/nvim/plug/vim-hidecomments'
 Plug '~/.local/share/nvim/plug/vim-startify'
 Plug '~/.local/share/nvim/plug/vim-surround'
 Plug '~/.local/share/nvim/plug/vim-comment-enhancer'
+Plug '~/.local/share/nvim/plug/vim-commentary'
 call plug#end()
 
 

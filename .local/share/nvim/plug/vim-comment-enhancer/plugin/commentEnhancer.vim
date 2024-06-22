@@ -36,8 +36,8 @@ endfunction
 
 function! ProcessComment(action)
   let l:current_date = GetCurrentDate()
-  let l:prefix = "/* BEGIN: " . a:action . " by " . g:author . ", " . l:current_date . " PN: " . g:PN . " Des: " . g:Des . " */\n"
-  let l:suffix = "/* END  : " . a:action . " by " . g:author . ", " . l:current_date . " PN: " . g:PN . " */"
+  let l:prefix = "/* BEGIN: " . a:action . " by " . g:author . ", " . l:current_date . " PN: " ."HSV7D".g:PN . " Des: " . g:Des . " */\n"
+  let l:suffix = "/* END  : " . a:action . " by " . g:author . ", " . l:current_date . " PN: " ."HSV7D".g:PN . " */"
   
   let l:start_line = line("'<")
   let l:end_line = line("'>")
