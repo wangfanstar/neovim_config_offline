@@ -296,14 +296,28 @@ function! SetGlobalDes()
     call add(g:which_key_vars, 'g:Des')
 endfunction
 
-" 定义一个函数来显示 which-key 中设置过的全局变量
+" 定义一个函数来显示设置过的全局变量
 function! ShowGlobalWhichKeyVars()
-    " 遍历追踪数组，并显示每个变量的值
-    for var_name in g:which_key_vars
-        execute 'echo "' . var_name . ' = " . ' . var_name
+    " 映射 key 到全局变量名
+    let l:key_mapping = {
+    \ '<leader>1': 'g:author',
+    \ '<leader>2': 'g:PN',
+    \ '<leader>3': 'g:Des'
+    \ }
+
+    " 遍历映射中的键和值
+    for [key, var_name] in items(l:key_mapping)
+        " 检查全局变量是否存在，如果存在则读取其值
+        if exists(var_name)
+            let value = get(g:, var_name[2:], "")
+        else
+            let value = ""
+        endif
+
+        " 打印键、变量名及其值
+        echo key . ' ' . var_name . ' : ' . value
     endfor
 endfunction
-
 
 " 使用 which-key 设置快捷键
 lua << EOF
@@ -314,4 +328,5 @@ require("which-key").register({
   ["<leader>0"] = { ":call ShowGlobalWhichKeyVars()<CR>", "Show Which-Key Global Variables" },
 })
 EOF
+
 
