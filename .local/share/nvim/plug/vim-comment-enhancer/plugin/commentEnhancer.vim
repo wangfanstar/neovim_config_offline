@@ -106,3 +106,142 @@ endfunction
 vnoremap <C-a> :<C-u>call AddComment()<CR>
 vnoremap <C-d> :<C-u>call DeleteComment()<CR>
 vnoremap <C-o> :<C-u>call ModifyComment()<CR>
+
+" 初始化用于追踪变量名的全局数组
+let g:which_key_vars = []
+
+" 定义一个函数来设置全局变量 g:author，并追踪变量名
+function! SetGlobalAuthor()
+    let g:author = input('Please enter the author name: ')
+    call add(g:which_key_vars, 'g:author')
+endfunction
+
+" 定义一个函数来设置全局变量 g:PN，并追踪变量名
+function! SetGlobalPN()
+    let g:PN = input('Please enter the PN: ')
+    call add(g:which_key_vars, 'g:PN')
+endfunction
+
+" 定义一个函数来设置全局变量 g:Des，并追踪变量名
+function! SetGlobalDes()
+    let g:Des = input('Please enter the Description: ')
+    call add(g:which_key_vars, 'g:Des')
+endfunction
+
+" 定义一个函数来显示设置过的全局变量
+function! ShowGlobalWhichKeyVars()
+    " 映射 key 到全局变量名
+    let l:key_mapping = {
+    \ '<leader>1': 'g:author',
+    \ '<leader>2': 'g:PN',
+    \ '<leader>3': 'g:Des'
+    \ }
+
+    " 遍历映射中的键和值
+    for [key, var_name] in items(l:key_mapping)
+        " 检查全局变量是否存在，如果存在则读取其值
+        if exists(var_name)
+            let value = get(g:, var_name[2:], "")
+        else
+            let value = ""
+        endif
+
+        " 打印键、变量名及其值
+        echo key . ' ' . var_name . ' : ' . value
+    endfor
+endfunction
+
+" 创建映射
+nnoremap <silent> <leader>1 :call SetGlobalAuthor()<CR>
+nnoremap <silent> <leader>2 :call SetGlobalPN()<CR>
+nnoremap <silent> <leader>3 :call SetGlobalDes()<CR>
+nnoremap <silent> <leader>0 :call ShowGlobalWhichKeyVars()<CR>
+
+
+function! GenerateFunctionComment()
+    " 获取选中的文本
+    let selection = getline("'<","'>")
+    let func_decl = join(selection, " ")
+
+    " 解析函数声明
+    let parts = split(func_decl)
+    let return_type = parts[0]
+    let func_name = split(parts[1], '(')[0]
+    
+    " 提取参数
+    let params_start = stridx(func_decl, '(') + 1
+    let params_end = strridx(func_decl, ')')
+    let params = strpart(func_decl, params_start, params_end - params_start)
+    let param_list = split(params, ',')
+
+    " 生成注释
+    let comment = [
+        \ '/*****************************************************************************',
+        \ ' Func Name    : ' . func_name,
+        \ ' Date Created : ' . strftime('%Y/%m/%d'),
+        \ ' Author       : ' . g:author,
+        \ ' Description  : '
+    \ ]
+
+    let input_params = []
+    let output_params = []
+
+    " 添加输入参数和输出参数
+    for param in param_list
+        let param = substitute(param, '^\s*', '', '')  " 移除开头的空白
+        let param_parts = split(param)
+        let param_type = join(param_parts[1:-2], ' ')
+        let param_name = param_parts[-1]
+        let clean_param = param_type . ' ' . param_name
+        if param_parts[0] =~? '\v^(IN|INOUT)'
+            call add(input_params, clean_param)
+        endif
+        if param_parts[0] =~? '\v^(OUT|INOUT)'
+            call add(output_params, clean_param)
+        endif
+    endfor
+
+    " 添加输入参数
+    if len(input_params) == 0
+        call add(comment, ' Input        : None')
+    elseif len(input_params) == 1
+        call add(comment, ' Input        : ' . input_params[0])
+    else
+        call add(comment, ' Input        : ' . input_params[0])
+        for param in input_params[1:]
+            call add(comment, '                ' . param)
+        endfor
+    endif
+
+    " 添加输出参数
+    if len(output_params) == 0
+        call add(comment, ' Output       : None')
+    elseif len(output_params) == 1
+        call add(comment, ' Output       : ' . output_params[0])
+    else
+        call add(comment, ' Output       : ' . output_params[0])
+        for param in output_params[1:]
+            call add(comment, '                ' . param)
+        endfor
+    endif
+
+    " 添加返回值
+    if return_type ==? 'ULONG'
+        call add(comment, ' Return       : ERROR_SUCCESS 操作成功')
+        call add(comment, '                ERROR_FAILED  操作失败')
+    else
+        call add(comment, ' Return       : ' . return_type)
+    endif
+
+    call add(comment, ' Caution      :')
+    call add(comment, '*****************************************************************************/')
+
+    " 插入注释，只插入一次
+    call append(line("'<")-1, comment)
+
+    " 移动光标到插入的注释上方
+    call cursor(line("'<")-1, 1)
+endfunction
+
+" 映射快捷键，使用 <silent> 来避免重复执行
+vnoremap <silent> <leader>f :call GenerateFunctionComment()<CR>
