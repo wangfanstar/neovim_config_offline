@@ -32,6 +32,7 @@ Plug '~/.local/share/nvim/plug/vim-surround'
 "Plug '~/.local/share/nvim/plug/vim-comment-enhancer'
 Plug '~/.local/share/nvim/plug/vim-commentary'
 Plug '~/.local/share/nvim/plug/bufexplorer'
+Plug '~/.local/share/nvim/plug/Align'
 call plug#end()
 
 
@@ -45,6 +46,18 @@ let c_no_bracket_error = 1
 let c_no_curly_error = 1
 let c_gnu = 1
 
+
+" rainbow 彩虹括号
+let g:rainbow_active = 1
+
+" Align 对齐插件配置
+" 常用：选中行后 \t= 按等号对齐，\t, 按逗号对齐，\t: 按冒号对齐
+" \tsp 按空格对齐，\ts, 按逗号对齐（含空格），\acom 对齐C注释
+let g:loaded_AlignMapsPlugin = 0  " 不自动加载 AlignMaps 全部映射，避免与其他插件冲突
+vmap <Leader>t= :Align =<CR>
+vmap <Leader>t, :Align ,<CR>
+vmap <Leader>t: :Align :<CR>
+vmap <Leader>t; :Align ;<CR>
 
 " cSyntaxAfter 高亮括号与运算符
 au! BufRead,BufNewFile,BufEnter *.{c,cpp,h} call CSyntaxAfter()
