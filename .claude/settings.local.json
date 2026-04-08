@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs file:*)",
+      "Bash(python3:*)",
+      "Bash(python3.exe --version)",
+      "Bash(python.exe --version)",
+      "Bash(where python:*)",
+      "Bash(git --version)",
+      "Bash(grep -E \"\\\\.vim$|\\\\.vimrc|vimrc\")",
+      "Bash(rm -rf \"/e/MCP_PROJECT/neovim/.local/share/nvim/plug/std_c/\"*)",
+      "Bash(cp -r \"/e/MCP_PROJECT/neovim/reference/vim74config/.vim/bundle/std_c.zip/.\" \"/e/MCP_PROJECT/neovim/.local/share/nvim/plug/std_c/\")",
+      "Bash(find:*)",
+      "Bash(wait:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)"
+    ]
+  }
+}
